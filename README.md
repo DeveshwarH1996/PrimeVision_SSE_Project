@@ -20,6 +20,28 @@ pytest tests/ -v
 
 ## Architecture
 
+```mermaid
+flowchart TD
+    Sensor["Sensor / Client"] -->|POST /events/package-scan| API["FastAPI"]
+    API -->|"202 Accepted"| Sensor
+    API -->|"write RECEIVED"| Redis[("Redis")]
+    API -->|"spawn background task"| Pipeline["Enrichment Pipeline"]
+
+    Pipeline --> M1["ENRICHED_METADATA"]
+    M1 --> M2["ENRICHED_OCR"]
+    M2 --> M3["ENRICHED_LLM1"]
+    M3 --> M4["ENRICHED_LLM2"]
+    M4 --> Router["router.py"]
+
+    Router -->|"confidence ≥ threshold"| Fin["ROUTED → FINALIZED"]
+    Router -->|"confidence < threshold"| MR["MANUAL_REVIEW\n⏸ pipeline paused"]
+    MR -->|"POST /packages/{id}/review"| Fin
+
+    Pipeline -->|"every state change"| Redis
+    Redis -->|"pub/sub"| WS["WebSocket Handler"]
+    WS -->|"broadcast"| Clients["Connected Clients\nWS /ws/events"]
+```
+
 - **FastAPI background tasks** — scan returns 202 immediately; enrichment runs async. Tradeoff: job lost if server crashes mid-pipeline.
 - **Redis dual role** — hashes for package state, pub/sub for WebSocket broadcasting. App layer is stateless; multiple instances scale horizontally with correct broadcast.
 - **Swappable router** — `router.py` returns `(route, confidence)`. ML-based router can replace rule-based without touching the pipeline.
