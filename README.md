@@ -6,7 +6,13 @@
 docker compose up --build
 ```
 
-API available at `http://localhost:8000`. Docs at `http://localhost:8000/docs`.
+API available at `http://localhost:8000`. Interactive docs at `http://localhost:8000/docs`.
+
+**Run tests (no Docker required):**
+```bash
+pip install -r requirements.txt -r requirements-dev.txt
+pytest tests/ -v
+```
 
 ---
 
