@@ -25,19 +25,18 @@ flowchart TD
     Sensor["Sensor / Client"] -->|POST /events/package-scan| API["FastAPI"]
     API -->|"202 Accepted"| Sensor
     API -->|"write RECEIVED"| Redis[("Redis")]
-    API -->|"spawn background task"| Pipeline["Enrichment Pipeline"]
+    API -->|"spawn background task"| Pipeline["Enrichment Pipeline\nMETADATA → OCR → LLM1 → LLM2"]
 
-    Pipeline --> M1["ENRICHED_METADATA"]
-    M1 --> M2["ENRICHED_OCR"]
-    M2 --> M3["ENRICHED_LLM1"]
-    M3 --> M4["ENRICHED_LLM2"]
-    M4 --> Router["router.py"]
+    Pipeline -->|"write each step"| Redis
+    Pipeline --> Router["router.py"]
 
     Router -->|"confidence ≥ threshold"| Fin["ROUTED → FINALIZED"]
     Router -->|"confidence < threshold"| MR["MANUAL_REVIEW\n⏸ pipeline paused"]
     MR -->|"POST /packages/{id}/review"| Fin
 
-    Pipeline -->|"every state change"| Redis
+    Fin -->|"write state"| Redis
+    MR -->|"write state"| Redis
+
     Redis -->|"pub/sub"| WS["WebSocket Handler"]
     WS -->|"broadcast"| Clients["Connected Clients\nWS /ws/events"]
 ```
