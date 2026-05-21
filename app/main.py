@@ -1,12 +1,12 @@
 import asyncio
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from redis.asyncio import Redis
 
 from app.config import settings
 from app.dependencies import set_redis, get_redis
-from app.websocket import pubsub_listener
+from app.websocket import manager, pubsub_listener
 from app.routes import events, packages, robots, cameras, health
 
 
@@ -32,3 +32,13 @@ app.include_router(packages.router)
 app.include_router(robots.router)
 app.include_router(cameras.router)
 app.include_router(health.router)
+
+
+@app.websocket("/ws/events")
+async def websocket_events(websocket: WebSocket):
+    await manager.connect(websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
