@@ -20,11 +20,6 @@ Run tests:
 pytest tests/ -v
 ```
 
-Run the dev server (requires a running Redis instance):
-```bash
-uvicorn app.main:app --reload
-```
-
 > Tests suppress `RuntimeWarning: coroutine 'run_pipeline' was never awaited`. This is expected — scan endpoint tests mock `asyncio.create_task`, so the coroutine is created but never awaited. Not a bug; suppressed in `pytest.ini`.
 
 ---
