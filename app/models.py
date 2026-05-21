@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class PackageScanRequest(BaseModel):
@@ -22,8 +22,8 @@ class PackageState(BaseModel):
     robot_id: str
     camera_id: str
     route: str | None = None
-    history: list[str] = []
-    enrichment_metadata: dict = {}
+    history: list[str] = Field(default_factory=list)
+    enrichment_metadata: dict[str, object] = Field(default_factory=dict)
     retry_count: int = 0
     created_at: datetime
     updated_at: datetime
