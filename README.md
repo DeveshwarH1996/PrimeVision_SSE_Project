@@ -8,18 +8,21 @@ docker compose up --build
 
 API at `http://localhost:8000` — interactive docs at `/docs`.
 
-**Tests (no Docker required):**
-```bash
-pip install -r requirements.txt -r requirements-dev.txt
-pytest tests/ -v
-```
-
-**Optional — conda environment:**
+**Without Docker — optional conda environment:**
 ```bash
 conda create -n primevision python=3.11
 conda activate primevision
 pip install -r requirements.txt -r requirements-dev.txt
-uvicorn app.main:app --reload   # requires a running Redis instance
+```
+
+Run tests:
+```bash
+pytest tests/ -v
+```
+
+Run the dev server (requires a running Redis instance):
+```bash
+uvicorn app.main:app --reload
 ```
 
 > Tests suppress `RuntimeWarning: coroutine 'run_pipeline' was never awaited`. This is expected — scan endpoint tests mock `asyncio.create_task`, so the coroutine is created but never awaited. Not a bug; suppressed in `pytest.ini`.
