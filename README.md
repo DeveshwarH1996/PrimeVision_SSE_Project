@@ -22,7 +22,7 @@ pytest tests/ -v
 
 ```mermaid
 flowchart TD
-    Sensor["Sensor / Client"] -->|POST /events/package-scan| API["FastAPI"]
+    Sensor["Sensor"] -->|POST /events/package-scan| API["FastAPI"]
     API -->|"202 Accepted"| Sensor
     API -->|"write RECEIVED"| Redis[("Redis")]
     API -->|"spawn background task"| Pipeline["Enrichment Pipeline\nMETADATA → OCR → LLM1 → LLM2"]
@@ -38,7 +38,11 @@ flowchart TD
     MR -->|"write state"| Redis
 
     Redis -->|"pub/sub"| WS["WebSocket Handler"]
-    WS -->|"broadcast"| Clients["Connected Clients\nWS /ws/events"]
+    WS -->|"broadcast"| WSClients["WebSocket Clients\nWS /ws/events"]
+
+    Operator["Operator / Dashboard"] -->|"GET /packages/*\nGET /robots, /cameras\nGET /health, /stats"| API
+    API -->|"read state"| Redis
+    API -->|"package state"| Operator
 ```
 
 - **FastAPI background tasks** — scan returns 202 immediately; enrichment runs async. Tradeoff: job lost if server crashes mid-pipeline.
