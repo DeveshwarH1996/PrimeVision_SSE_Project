@@ -82,20 +82,20 @@ Full implementation plan: `docs/superpowers/plans/2026-05-21-sse-orchestrator.md
 | Task | Status | Description |
 |------|--------|-------------|
 | Task 0 | ✅ Done | Environment setup — conda env, requirements, pytest.ini |
-| Task 1 | ⏳ Next | Docker + docker-compose.yml |
-| Task 2 | ⏳ | Config + Models |
-| Task 3 | ⏳ | Dependencies module + State layer (Redis) |
-| Task 4 | ⏳ | Router module |
-| Task 5 | ⏳ | WebSocket + Connection Manager |
-| Task 6 | ⏳ | Main app + lifespan + conftest.py |
-| Task 7 | ⏳ | Scan endpoint + enrichment pipeline |
-| Task 8 | ⏳ | Package endpoints + manual review |
-| Task 9 | ⏳ | Observability endpoints (robots, cameras) |
-| Task 10 | ⏳ | WebSocket endpoint wired into main |
-| Task 11 | ⏳ | README |
-| Task 12 | ⏳ | Full test run + Docker smoke test |
+| Task 1 | ✅ Done | Docker + docker-compose.yml |
+| Task 2 | ✅ Done | Config + Models |
+| Task 3 | ✅ Done | Dependencies module + State layer (Redis) |
+| Task 4 | ✅ Done | Router module |
+| Task 5 | ✅ Done | WebSocket + Connection Manager |
+| Task 6 | ✅ Done | Main app + lifespan + conftest.py |
+| Task 7 | ✅ Done | Scan endpoint + enrichment pipeline |
+| Task 8 | ✅ Done | Package endpoints + manual review |
+| Task 9 | ✅ Done | Observability endpoints (robots, cameras) |
+| Task 10 | ✅ Done | WebSocket endpoint wired into main |
+| Task 11 | ✅ Done | README |
+| Task 12 | ✅ Done | Full test run + Docker smoke test |
 
-**To resume:** Invoke `superpowers:subagent-driven-development` and start from Task 1. Use `conda run -n primevision` prefix for all Python/pytest commands inside subagents.
+**Implementation complete.** All 31 tests pass. Final commit: `c693064`.
 
 ---
 
