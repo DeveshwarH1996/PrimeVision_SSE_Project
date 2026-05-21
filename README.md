@@ -14,6 +14,8 @@ pip install -r requirements.txt -r requirements-dev.txt
 pytest tests/ -v
 ```
 
+Tests produce no warnings. The test suite patches `asyncio.create_task` in scan endpoint tests to prevent the background pipeline from running during assertions. Python creates the `run_pipeline` coroutine to pass to `create_task`, but since the call is mocked the coroutine is never awaited — triggering a `RuntimeWarning: coroutine 'run_pipeline' was never awaited`. This is an expected side effect of the mocking strategy, not a bug. The warning is suppressed in `pytest.ini` by matching its exact message.
+
 ---
 
 ## Architecture Decisions
