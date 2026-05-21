@@ -27,6 +27,14 @@ pytest tests/ -v
 
 ---
 
+## Scalability Considerations
+
+- **Stateless app layer** — all state lives in Redis; adding app instances requires no coordination layer
+- **WebSocket broadcast correctness** — Redis pub/sub ensures every client gets every update regardless of which instance they connect to
+- **Current bottleneck** — the enrichment pipeline runs as an in-process background task; replacing it with Celery workers enables independent scaling of processing capacity
+
+---
+
 ## Failure Handling
 
 - **Duplicate `piece_id`** — idempotency check returns current state; pipeline not re-run.
