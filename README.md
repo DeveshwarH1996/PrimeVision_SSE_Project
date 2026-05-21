@@ -14,6 +14,14 @@ pip install -r requirements.txt -r requirements-dev.txt
 pytest tests/ -v
 ```
 
+**Optional — conda environment:**
+```bash
+conda create -n primevision python=3.11
+conda activate primevision
+pip install -r requirements.txt -r requirements-dev.txt
+uvicorn app.main:app --reload   # requires a running Redis instance
+```
+
 > Tests suppress `RuntimeWarning: coroutine 'run_pipeline' was never awaited`. This is expected — scan endpoint tests mock `asyncio.create_task`, so the coroutine is created but never awaited. Not a bug; suppressed in `pytest.ini`.
 
 ---
